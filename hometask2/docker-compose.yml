@@ -1,0 +1,31 @@
+version: '3'
+services:
+  db:
+    image: mysql:latest
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'footgo'
+      MYSQL_USER: 'root'
+      MYSQL_PASSWORD: 'pwd'
+      MYSQL_ROOT_PASSWORD: 'pwd'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+  app:
+     image: fgbuild:latest
+     container_name: application
+     environment:
+       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/footgo?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+     ports:
+      - '8080:8080'
+     expose:
+      - '8080'   
+     links:
+      - db   
+      
+
+    
+
+

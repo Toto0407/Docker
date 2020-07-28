@@ -1,0 +1,114 @@
+--- 
+- name: Deploy FootGo to new webserver ubuntu 18.04
+  hosts: all
+  become: yes
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  tasks:
+
+  - name: Install Python
+    apt:
+      update_cache: yes
+      name: python3
+      state: latest
+
+  - name: Install Git
+    apt:  
+      name: git 
+      state: latest
+
+  - name: Create repository directory
+    file: 
+      path: /home/webapp 
+      state: directory
+      mode: '0755'
+
+  - name: Clone repository form GitHub
+    git:
+      repo: 'https://github.com/Toto0407/Footgo.git'
+      dest: /home/webapp
+      version: master
+      update: yes
+      force: yes
+
+  - name: install Maven
+    apt:
+      update_cache: yes
+      name: maven
+      state: latest
+
+  - name: install Tomcat9
+    apt:
+      update_cache: yes
+      name: tomcat9
+      state: latest
+
+  - name: Copy "application.properties" file with owner and permissions
+    command: cp /home/webapp/src/main/resources/application.properties.example  /home/webapp/src/main/resources/application.properties   
+     
+  - name: Install MySQL
+    apt:
+      name: mysql-server
+      state: latest
+
+  - name: Install PyMySql
+    apt:
+      name: python3-mysqldb      
+      state: latest
+
+  - name: Set MySQL root Password
+    mysql_user:
+      login_host: 'localhost'
+      login_user: 'root'
+      login_password: 'edvIT300!'
+      name: 'root'
+      password: '{{ mysql_pass }}'
+      state: present
+      update_password: always
+
+  - name: Creating a new database for FootGo
+    mysql_db:
+      name: footgo
+      login_user: root
+      login_password: '{{ mysql_pass }}'
+      login_host: localhost
+      login_port: 3306
+      state: present
+
+  - name: Replace password in application.properties
+    lineinfile:
+      path: /home/webapp/src/main/resources/application.properties
+      regexp: '^spring\.datasource\.password=pwd'
+      line: spring.datasource.password={{ mysql_pass }}
+  
+  - name: maven build FootGo package
+    command: mvn -f /home/webapp/pom.xml package 
+ 
+  - name: Remove all file from /webapps/
+    file:
+      path: /var/lib/tomcat9/webapps/*.*
+      state: absent
+
+  - name: Recursively remove all directorys from /webapps/
+    file:
+      path: /var/lib/tomcat9/webapps/*
+      state: absent
+   
+  - name: Copy ROOT.war to tomcat9 dir
+    command: cp /home/webapp/target/ROOT.war  /var/lib/tomcat9/webapps/ROOT.war
+  
+  - name: Restart service tomcat9 
+    become: yes
+    service:
+      name: tomcat9
+      state: restarted 
+
+  - name: wait for http://localhost:8080 to come up
+    uri:
+      url: "http://localhost:8080/bombardier"
+      method: GET
+    register: _result
+    until: _result.status == 200
+    retries: 20 # retry X times  
+    delay: 5 # pause for X sec b/w each call
+  

@@ -1,0 +1,33 @@
+pipeline { agent any
+    
+        environment{ CHECK_URL = "http://localhost:8080/bombardier" CMD = "curl --write-out %{http_code} 
+        --silent --output /dev/null ${CHECK_URL}"
+        }
+        stages { stage('Checkout'){ steps{ git 'https://github.com/Toto0407/Footgo.git'
+            }
+        }
+        stage('Build'){ steps{ sh 'docker build -t fgbuildnew:latest .'
+            }
+        }
+        stage('Deploy'){ when { expression { currentBuild.result == null || currentBuild.result == 'SUCCESS'
+              }
+            }
+            steps{ sh 'docker-compose up -d'
+            }
+        }
+        stage('Stage-Test-One') { steps { script{ sleep(time:40,unit:"SECONDS") sh "${CMD} > commandResult" 
+                    env.status = readFile('commandResult').trim()
+                }
+            }
+        }
+        stage('Stage-Test-Two') { steps { script { sh "echo ${env.status}" if (env.status == '200') { 
+                        currentBuild.result = "SUCCESS"
+                    }
+                    else { currentBuild.result = "FAILURE"
+                    }
+                }
+            }
+        }
+    
+    }
+}

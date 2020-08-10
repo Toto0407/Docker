@@ -1,0 +1,86 @@
+---
+- name: Deploy FootGo to new webserver ubuntu 18.04
+  hosts: all
+  become: yes
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+  vars_prompt:
+
+#  - name: "Rdsdns"
+#    prompt: "What is RDS DNS URL ?"
+
+  tasks:
+  
+  - name: Install Python
+    apt:
+      update_cache: yes
+      name: python3
+      state: latest
+
+  - name: Install Git
+    apt:
+      name: git
+      state: latest
+
+  - name: Create repository directory
+    file:
+      path: /home/webapp
+      state: directory
+      mode: '0755'
+
+  - name: Clone repository form GitHub
+    git:
+      repo: 'https://github.com/Toto0407/Footgo.git'
+      dest: /home/webapp
+      version: master
+      update: yes
+      force: yes
+
+  - name: install Maven
+    apt:
+      update_cache: yes
+      name: maven
+      state: latest
+
+  - name: install Tomcat9
+    apt:
+      update_cache: yes
+      name: tomcat9
+      state: latest
+
+  - name: Copy "application.properties" file with owner and permissions
+    command: cp /home/webapp/src/main/resources/application.properties.example  /home/webapp/src/main/resources/application.properties
+
+  - name: Replace password in application.properties
+    lineinfile:
+      path: /home/webapp/src/main/resources/application.properties
+      regexp: '^spring\.datasource\.password=pwd'
+      line: spring.datasource.password={{lookup('file', '/home/vagrant/site/packer/provisioners/pass.sh') }}
+
+  - name: Replace db link in application.properties
+    lineinfile:
+      path: /home/webapp/src/main/resources/application.properties
+      regexp: '^spring\.datasource\.url='
+      line: spring.datasource.url=jdbc:mysql://{{lookup('file', '/home/vagrant/site/packer/provisioners/dns.sh') }}:3306/footgo
+
+  - name: maven build FootGo package
+    command: mvn -f /home/webapp/pom.xml package
+
+  - name: Recursively remove all directorys from /webapps/
+    file:
+      path: /var/lib/tomcat9/webapps
+      state: absent
+
+  - name: Create a directory if it does not exist
+    file:
+      path: /var/lib/tomcat9/webapps
+      owner: tomcat
+      group: tomcat
+      state: directory
+      mode: '0755'
+
+  - name: Copy ROOT.war to tomcat9 dir
+    command: cp /home/webapp/target/ROOT.war  /var/lib/tomcat9/webapps/ROOT.war
+
+

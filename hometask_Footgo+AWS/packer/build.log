@@ -1,0 +1,88 @@
+1596796326,,ui,say,==> footgo: Prevalidating any provided VPC information
+1596796326,,ui,say,==> footgo: Prevalidating AMI Name: footgo-ami-packer-1596796325
+1596796327,,ui,message,    footgo: Found Image ID: ami-00f6a0c18edb19300
+1596796327,,ui,say,==> footgo: Creating temporary keypair: packer_5f2d2da5-1e9f-b6b1-853b-b96483d7bcc4
+1596796327,,ui,say,==> footgo: Creating temporary security group for this instance: packer_5f2d2da7-b295-a225-de68-e0b33a9e8ff6
+1596796328,,ui,say,==> footgo: Authorizing access to port 22 from [0.0.0.0/0] in the temporary security groups...
+1596796329,,ui,say,==> footgo: Launching a source AWS instance...
+1596796329,,ui,say,==> footgo: Adding tags to source instance
+1596796329,,ui,message,    footgo: Adding tag: "Name": "footgo"
+1596796330,,ui,message,    footgo: Instance ID: i-0081e4805e0094a6e
+1596796330,,ui,say,==> footgo: Waiting for instance (i-0081e4805e0094a6e) to become ready...
+1596796346,,ui,say,==> footgo: Using ssh communicator to connect: 18.132.199.5
+1596796346,,ui,say,==> footgo: Waiting for SSH to become available...
+1596796374,,ui,say,==> footgo: Connected to SSH!
+1596796374,,ui,say,==> footgo: Provisioning with Ansible...
+1596796374,,ui,message,    footgo: Setting up proxy adapter for Ansible....
+1596796374,,ui,say,==> footgo: Executing Ansible: ansible-playbook -e packer_build_name="footgo" -e packer_builder_type=amazon-ebs --ssh-extra-args '-o IdentitiesOnly=yes' -e ansible_ssh_private_key_file=/tmp/ansible-key791530298 -i /tmp/packer-provisioner-ansible023996241 /home/vagrant/site/packer/provisioners/ansible.yml
+1596796375,,ui,message,    footgo:
+1596796375,,ui,message,    footgo: PLAY [Deploy FootGo to new webserver ubuntu 18.04] *****************************
+1596796375,,ui,message,    footgo:
+1596796375,,ui,message,    footgo: TASK [Gathering Facts] *********************************************************
+1596796379,,ui,message,    footgo: ok: [default]
+1596796379,,ui,message,    footgo:
+1596796379,,ui,message,    footgo: TASK [Install Python] **********************************************************
+1596796390,,ui,message,    footgo: ok: [default]
+1596796390,,ui,message,    footgo:
+1596796390,,ui,message,    footgo: TASK [Install Git] *************************************************************
+1596796391,,ui,message,    footgo: ok: [default]
+1596796391,,ui,message,    footgo:
+1596796391,,ui,message,    footgo: TASK [Create repository directory] *********************************************
+1596796393,,ui,message,    footgo: changed: [default]
+1596796393,,ui,message,    footgo:
+1596796393,,ui,message,    footgo: TASK [Clone repository form GitHub] ********************************************
+1596796400,,ui,message,    footgo: changed: [default]
+1596796400,,ui,message,    footgo:
+1596796400,,ui,message,    footgo: TASK [install Maven] ***********************************************************
+1596796427,,ui,message,    footgo: changed: [default]
+1596796427,,ui,message,    footgo:
+1596796427,,ui,message,    footgo: TASK [install Tomcat9] *********************************************************
+1596796440,,ui,message,    footgo: changed: [default]
+1596796440,,ui,message,    footgo:
+1596796440,,ui,message,    footgo: TASK [Copy "application.properties" file with owner and permissions] ***********
+1596796441,,ui,message,    footgo: changed: [default]
+1596796442,,ui,message,    footgo:
+1596796442,,ui,message,    footgo: TASK [Replace password in application.properties] ******************************
+1596796443,,ui,message,    footgo: changed: [default]
+1596796443,,ui,message,    footgo:
+1596796443,,ui,message,    footgo: TASK [Replace db link in application.properties] *******************************
+1596796444,,ui,message,    footgo: changed: [default]
+1596796444,,ui,message,    footgo:
+1596796444,,ui,message,    footgo: TASK [maven build FootGo package] **********************************************
+1596796480,,ui,message,    footgo: changed: [default]
+1596796480,,ui,message,    footgo:
+1596796480,,ui,message,    footgo: TASK [Recursively remove all directorys from /webapps/] ************************
+1596796481,,ui,message,    footgo: changed: [default]
+1596796481,,ui,message,    footgo:
+1596796481,,ui,message,    footgo: TASK [Create a directory if it does not exist] *********************************
+1596796482,,ui,message,    footgo: changed: [default]
+1596796482,,ui,message,    footgo:
+1596796482,,ui,message,    footgo: TASK [Copy ROOT.war to tomcat9 dir] ********************************************
+1596796483,,ui,message,    footgo: changed: [default]
+1596796483,,ui,message,    footgo:
+1596796483,,ui,message,    footgo: TASK [Restart service tomcat9] *************************************************
+1596796575,,ui,message,    footgo: changed: [default]
+1596796575,,ui,message,    footgo:
+1596796575,,ui,message,    footgo: PLAY RECAP *********************************************************************
+1596796575,,ui,message,    footgo: default                    : ok=15   changed=12   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+1596796575,,ui,message,    footgo:
+1596796575,,ui,say,==> footgo: Stopping the source instance...
+1596796575,,ui,message,    footgo: Stopping instance
+1596796576,,ui,say,==> footgo: Waiting for the instance to stop...
+1596796607,,ui,say,==> footgo: Creating AMI footgo-ami-packer-1596796325 from instance i-0081e4805e0094a6e
+1596796607,,ui,message,    footgo: AMI: ami-088bd59d601128c69
+1596796607,,ui,say,==> footgo: Waiting for AMI to become ready...
+1596796685,,ui,say,==> footgo: Terminating the source AWS instance...
+1596796701,,ui,say,==> footgo: Cleaning up any extra volumes...
+1596796701,,ui,say,==> footgo: No volumes to clean up%!(PACKER_COMMA) skipping
+1596796701,,ui,say,==> footgo: Deleting temporary security group...
+1596796701,,ui,say,==> footgo: Deleting temporary keypair...
+1596796702,,ui,say,Build 'footgo' finished.
+1596796702,,ui,say,\n==> Builds finished. The artifacts of successful builds are:
+1596796702,footgo,artifact-count,1
+1596796702,footgo,artifact,0,builder-id,mitchellh.amazonebs
+1596796702,footgo,artifact,0,id,eu-west-2:ami-088bd59d601128c69
+1596796702,footgo,artifact,0,string,AMIs were created:\neu-west-2: ami-088bd59d601128c69\n
+1596796702,footgo,artifact,0,files-count,0
+1596796702,footgo,artifact,0,end
+1596796702,,ui,say,--> footgo: AMIs were created:\neu-west-2: ami-088bd59d601128c69\n

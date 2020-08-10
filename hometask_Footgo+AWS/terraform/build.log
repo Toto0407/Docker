@@ -1,0 +1,85 @@
+1597075612,,ui,say,==> amazon-ebs: Prevalidating any provided VPC information
+1597075612,,ui,say,==> amazon-ebs: Prevalidating AMI Name: footgo-ami-packer-1597075608
+1597075613,,ui,message,    amazon-ebs: Found Image ID: ami-00f6a0c18edb19300
+1597075613,,ui,say,==> amazon-ebs: Creating temporary keypair: packer_5f317099-c353-135b-99d3-a97ea7c7d078
+1597075614,,ui,say,==> amazon-ebs: Creating temporary security group for this instance: packer_5f31709e-8eb4-86aa-73c6-aad2e8e7dfe4
+1597075615,,ui,say,==> amazon-ebs: Authorizing access to port 22 from [0.0.0.0/0] in the temporary security groups...
+1597075615,,ui,say,==> amazon-ebs: Launching a source AWS instance...
+1597075615,,ui,say,==> amazon-ebs: Adding tags to source instance
+1597075615,,ui,message,    amazon-ebs: Adding tag: "Name": "Packer Builder"
+1597075617,,ui,message,    amazon-ebs: Instance ID: i-0e88b2e54907fbdc8
+1597075617,,ui,say,==> amazon-ebs: Waiting for instance (i-0e88b2e54907fbdc8) to become ready...
+1597075648,,ui,say,==> amazon-ebs: Using ssh communicator to connect: 3.9.19.111
+1597075648,,ui,say,==> amazon-ebs: Waiting for SSH to become available...
+1597075651,,ui,say,==> amazon-ebs: Connected to SSH!
+1597075651,,ui,say,==> amazon-ebs: Provisioning with Ansible...
+1597075651,,ui,message,    amazon-ebs: Setting up proxy adapter for Ansible....
+1597075651,,ui,say,==> amazon-ebs: Executing Ansible: ansible-playbook -e packer_build_name="amazon-ebs" -e packer_builder_type=amazon-ebs --ssh-extra-args '-o IdentitiesOnly=yes' -e ansible_ssh_private_key_file=/tmp/ansible-key782543113 -i /tmp/packer-provisioner-ansible000976084 /home/vagrant/site/packer/provisioners/ansible.yml
+1597075652,,ui,message,    amazon-ebs:
+1597075652,,ui,message,    amazon-ebs: PLAY [Deploy FootGo to new webserver ubuntu 18.04] *****************************
+1597075652,,ui,message,    amazon-ebs:
+1597075652,,ui,message,    amazon-ebs: TASK [Gathering Facts] *********************************************************
+1597075656,,ui,message,    amazon-ebs: ok: [default]
+1597075656,,ui,message,    amazon-ebs:
+1597075656,,ui,message,    amazon-ebs: TASK [Install Python] **********************************************************
+1597075667,,ui,message,    amazon-ebs: ok: [default]
+1597075667,,ui,message,    amazon-ebs:
+1597075667,,ui,message,    amazon-ebs: TASK [Install Git] *************************************************************
+1597075669,,ui,message,    amazon-ebs: ok: [default]
+1597075669,,ui,message,    amazon-ebs:
+1597075669,,ui,message,    amazon-ebs: TASK [Create repository directory] *********************************************
+1597075671,,ui,message,    amazon-ebs: changed: [default]
+1597075671,,ui,message,    amazon-ebs:
+1597075671,,ui,message,    amazon-ebs: TASK [Clone repository form GitHub] ********************************************
+1597075676,,ui,message,    amazon-ebs: changed: [default]
+1597075676,,ui,message,    amazon-ebs:
+1597075676,,ui,message,    amazon-ebs: TASK [install Maven] ***********************************************************
+1597075702,,ui,message,    amazon-ebs: changed: [default]
+1597075702,,ui,message,    amazon-ebs:
+1597075702,,ui,message,    amazon-ebs: TASK [install Tomcat9] *********************************************************
+1597075714,,ui,message,    amazon-ebs: changed: [default]
+1597075714,,ui,message,    amazon-ebs:
+1597075714,,ui,message,    amazon-ebs: TASK [Copy "application.properties" file with owner and permissions] ***********
+1597075715,,ui,message,    amazon-ebs: changed: [default]
+1597075715,,ui,message,    amazon-ebs:
+1597075715,,ui,message,    amazon-ebs: TASK [Replace password in application.properties] ******************************
+1597075718,,ui,message,    amazon-ebs: changed: [default]
+1597075718,,ui,message,    amazon-ebs:
+1597075718,,ui,message,    amazon-ebs: TASK [Replace db link in application.properties] *******************************
+1597075720,,ui,message,    amazon-ebs: changed: [default]
+1597075720,,ui,message,    amazon-ebs:
+1597075720,,ui,message,    amazon-ebs: TASK [maven build FootGo package] **********************************************
+1597075752,,ui,message,    amazon-ebs: changed: [default]
+1597075752,,ui,message,    amazon-ebs:
+1597075752,,ui,message,    amazon-ebs: TASK [Recursively remove all directorys from /webapps/] ************************
+1597075753,,ui,message,    amazon-ebs: changed: [default]
+1597075753,,ui,message,    amazon-ebs:
+1597075753,,ui,message,    amazon-ebs: TASK [Create a directory if it does not exist] *********************************
+1597075754,,ui,message,    amazon-ebs: changed: [default]
+1597075754,,ui,message,    amazon-ebs:
+1597075754,,ui,message,    amazon-ebs: TASK [Copy ROOT.war to tomcat9 dir] ********************************************
+1597075755,,ui,message,    amazon-ebs: changed: [default]
+1597075755,,ui,message,    amazon-ebs:
+1597075755,,ui,message,    amazon-ebs: PLAY RECAP *********************************************************************
+1597075755,,ui,message,    amazon-ebs: default                    : ok=14   changed=11   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+1597075755,,ui,message,    amazon-ebs:
+1597075755,,ui,say,==> amazon-ebs: Stopping the source instance...
+1597075755,,ui,message,    amazon-ebs: Stopping instance
+1597075756,,ui,say,==> amazon-ebs: Waiting for the instance to stop...
+1597075772,,ui,say,==> amazon-ebs: Creating AMI footgo-ami-packer-1597075608 from instance i-0e88b2e54907fbdc8
+1597075772,,ui,message,    amazon-ebs: AMI: ami-05c4087f8081212d8
+1597075772,,ui,say,==> amazon-ebs: Waiting for AMI to become ready...
+1597075850,,ui,say,==> amazon-ebs: Terminating the source AWS instance...
+1597075866,,ui,say,==> amazon-ebs: Cleaning up any extra volumes...
+1597075866,,ui,say,==> amazon-ebs: No volumes to clean up%!(PACKER_COMMA) skipping
+1597075866,,ui,say,==> amazon-ebs: Deleting temporary security group...
+1597075867,,ui,say,==> amazon-ebs: Deleting temporary keypair...
+1597075867,,ui,say,Build 'amazon-ebs' finished.
+1597075867,,ui,say,\n==> Builds finished. The artifacts of successful builds are:
+1597075867,amazon-ebs,artifact-count,1
+1597075867,amazon-ebs,artifact,0,builder-id,mitchellh.amazonebs
+1597075867,amazon-ebs,artifact,0,id,eu-west-2:ami-05c4087f8081212d8
+1597075867,amazon-ebs,artifact,0,string,AMIs were created:\neu-west-2: ami-05c4087f8081212d8\n
+1597075867,amazon-ebs,artifact,0,files-count,0
+1597075867,amazon-ebs,artifact,0,end
+1597075867,,ui,say,--> amazon-ebs: AMIs were created:\neu-west-2: ami-05c4087f8081212d8\n
